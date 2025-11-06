@@ -34,7 +34,10 @@ extern "C"
         fric1_speed_pid = new pyro::pid_ctrl_t(1.5f, 0.0f, 0.0f);
         fric2_speed_pid = new pyro::pid_ctrl_t(1.5f, 0.0f, 0.0f);
         trigger_speed_pid = new pyro::pid_ctrl_t(0.2f, 70.0f, 0.0005f);
-        trigger_positon_pid = new pyro::pid_ctrl_t(3.0f, 0.1f, 0.1f);
+        trigger_positon_pid = new pyro::pid_ctrl_t(0.4f, 0.1f, 0.0f);
+
+        trigger_speed_pid->set_integral_limits(0.01f);
+        trigger_positon_pid->set_integral_limits(1000.0f);
 
         fric1_speed_pid->set_output_limits(20.0f);
         fric2_speed_pid->set_output_limits(20.0f);

@@ -23,10 +23,9 @@ public:
     trigger_drv_t *_trigger_drv;
 
 private:
-    bool _one_bullet = false;
+    bool _reverse = true;
     float _first_radian{};
     float _trigger_rotate;
-    float _one_bullet_radian;
     float _fric_speed;
     fric_drv_t *_fric_drv[2];
 };

@@ -63,6 +63,7 @@ void shoot_17mm_control_t::set_control()
             {
                 if(SHOOT_READY_SETUP == _ready_mode)
                 {
+                    _reverse = true;
                     _local_mode = SHOOT_SETUP;
                 }
             }
@@ -74,6 +75,7 @@ void shoot_17mm_control_t::set_control()
                 )
                 {
                     _local_mode = SHOOT_READY;
+                    _reverse = false;
                 }
             }
             else if(SHOOT_READY == _local_mode)
@@ -85,6 +87,7 @@ void shoot_17mm_control_t::set_control()
                 if(SHOOT_READY_CONTINUOUS == _ready_mode)
                 {
                     _local_mode = SHOOT_CONTINUOUS;
+                    _reverse = true;
                 }
             }
             else if(SHOOT_START == _local_mode)
@@ -98,6 +101,14 @@ void shoot_17mm_control_t::set_control()
                 {
                     _local_mode = SHOOT_SETUP;
 
+                }
+            }
+            else if(SHOOT_CONTINUOUS == _local_mode)
+            {
+                if(SHOOT_READY_SETUP == _ready_mode)
+                {
+                    _reverse = true;
+                    _local_mode = SHOOT_SETUP;
                 }
             }
 
@@ -166,7 +177,10 @@ void shoot_17mm_control_t::control()
 
             if(SHOOT_SETUP == _local_mode)
             {
-                _trigger_drv->set_rotate(-2.0f);
+                if(_reverse)
+                {
+                    _trigger_drv->set_rotate(-2.0f);
+                }
             }
             else if (SHOOT_CONTINUOUS == _local_mode)
             {

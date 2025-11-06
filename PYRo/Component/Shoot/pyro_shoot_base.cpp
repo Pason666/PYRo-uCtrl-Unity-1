@@ -69,7 +69,7 @@ void shoot_base_t::dr16_cmd()
             else if(dr16_drv_t::DR16_SW_MID == static_cast<uint8_t>(p_ctrl->rc.s[dr16_drv_t::DR16_SW_LEFT])
                 && dr16_drv_t::DR16_SW_DOWN == static_cast<uint8_t>(p_last_ctrl->rc.s[dr16_drv_t::DR16_SW_LEFT]))
             {
-                _ready_mode = SHOOT_READY_WAIT;
+                _ready_mode = SHOOT_READY_SETUP;
             }
 
         }
