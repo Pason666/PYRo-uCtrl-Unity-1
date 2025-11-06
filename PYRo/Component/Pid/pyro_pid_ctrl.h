@@ -28,9 +28,10 @@ class pid_ctrl_t // classic pid
         status_t set_integral_limits(float max);
     private:
         uint32_t _time_stamp;
-
-        float _dt;
+        
         float _kp, _ki, _kd;
+        float _dt;
+        
 
         float _reference,_feedback;
         float _error, _error_last;

@@ -12,9 +12,6 @@
 
 extern "C"
 {
-
-    int temp = 0;
-
     pyro::dji_m3508_motor_drv_t *m3508_drv_1;
     pyro::dji_m3508_motor_drv_t *m3508_drv_2;
 
@@ -34,15 +31,15 @@ extern "C"
 
     void pyro_shoot_demo(void *arg)
     { 
-        fric1_speed_pid = new pyro::pid_ctrl_t(5.0f, 0.0f, 0.00f);
-        fric2_speed_pid = new pyro::pid_ctrl_t(5.0f, 0.0f, 0.00f);
-        trigger_speed_pid = new pyro::pid_ctrl_t(1.0f, 0.0f, 0.00f);
-        trigger_positon_pid = new pyro::pid_ctrl_t(1.0f, 0.00f, 0.00f);
+        fric1_speed_pid = new pyro::pid_ctrl_t(1.5f, 0.0f, 0.0f);
+        fric2_speed_pid = new pyro::pid_ctrl_t(1.5f, 0.0f, 0.0f);
+        trigger_speed_pid = new pyro::pid_ctrl_t(0.2f, 70.0f, 0.0005f);
+        trigger_positon_pid = new pyro::pid_ctrl_t(3.0f, 0.1f, 0.1f);
 
-        fric1_speed_pid->set_output_limits(15.0f);
-        fric2_speed_pid->set_output_limits(15.0f);
-        trigger_speed_pid->set_output_limits(5.0f);
-        trigger_positon_pid->set_output_limits(5.0f);
+        fric1_speed_pid->set_output_limits(20.0f);
+        fric2_speed_pid->set_output_limits(20.0f);
+        trigger_speed_pid->set_output_limits(60.0f);
+        trigger_positon_pid->set_output_limits(20.0f);
 
 
         m3508_drv_1 = new pyro::dji_m3508_motor_drv_t(
@@ -83,32 +80,15 @@ extern "C"
             fric_drv_2
             );
 
-        shoot_drv->set_continuous_mode_delay(100);
+        shoot_drv->set_continuous_mode_delay(20);
         shoot_drv->set_fric_speed(23.0f);
         shoot_drv->set_trigger_rotate(5.0f);
 
         while (true)
         {
-            // shoot_drv->update_feedback();
-            // shoot_drv->_trigger_drv->set_radian(shoot_drv->_trigger_drv->get_radian() - STEP);
-            // shoot_drv->_trigger_drv->set_rotate(10.0f);
-            // shoot_drv->_trigger_drv->control();
-            // shoot_drv->set_control();
-
-            if(temp == 0)
-            {
-                trigger_drv->step_forward();
-                temp = 1;
-            }
-            fric_drv_1->set_speed(0.0f);
-            fric_drv_2->set_speed(0.0f);
-
-            trigger_drv->control();
-            fric_drv_1->control();
-            fric_drv_2->control();
-
-
-            // shoot_drv->control();
+            shoot_drv->update_feedback();
+            shoot_drv->set_control();
+            shoot_drv->control();
 
             vTaskDelay(1);
         }

@@ -19,8 +19,8 @@ trigger_drv_t::trigger_drv_t(motor_base_t *motor_base,
       _step_radian(step_radian),
       _direction(direction)
 {
-    update_feedback();
-    _target_trigger_radian = _current_trigger_radian;
+    // update_feedback();
+    // _target_trigger_radian = _current_trigger_radian;
 }
 
 void trigger_drv_t::set_dt(float dt)
@@ -110,14 +110,24 @@ void trigger_drv_t::zero_force()
 void trigger_drv_t::update_feedback()
 {
     motor_base->update_feedback();
+    if(UP == _direction)
+    {
+    _current_trigger_rotate = motor_base->get_current_rotate() / _gear_ratio;
+    }
+    else
+    {
+    _current_trigger_rotate = -motor_base->get_current_rotate() / _gear_ratio;
+    }
     _last_motor_radian = _current_motor_radian;
     _current_motor_radian = motor_base->get_current_position();
-    _motor_to_trigger_radian();
+    if(POSITION == _mode)
+    {
+        _motor_to_trigger_radian();
+    }
 }
 
 void trigger_drv_t::control()
 {
-    update_feedback();
     if(ROTATE == _mode)
     {
         float torque_cmd = _rotate_pid.compute(_target_trigger_rotate, _current_trigger_rotate, _dt);
@@ -133,12 +143,31 @@ void trigger_drv_t::control()
     }
     else if(POSITION == _mode) 
     {
+        float rotate_cmd{};
+        float torque_cmd{};
+        if(_target_trigger_radian < PI)
+        {
+            rotate_cmd = _position_pid.compute(_target_trigger_radian, _current_trigger_radian, _dt);
+            torque_cmd = _rotate_pid.compute(rotate_cmd, _current_trigger_rotate, _dt);
+        }
+        else
+        {
+            if(_current_trigger_radian > 0.0f)
+            {
+                rotate_cmd = _position_pid.compute(_target_trigger_radian, _current_trigger_radian, _dt);
+                torque_cmd = _rotate_pid.compute(rotate_cmd, _current_trigger_rotate, _dt);
+            }
+            else
+            {
+                _target_trigger_radian -= 2 * PI;
+            }
+        }
         // if(_target_trigger_radian - _current_trigger_radian > PI)
         // {
         //     _target_trigger_radian -= 2 * PI;
         // }
-        float rotate_cmd = _position_pid.compute(_target_trigger_radian, _current_trigger_radian, _dt);
-        float torque_cmd = _rotate_pid.compute(rotate_cmd, _current_trigger_rotate, _dt);
+        // float rotate_cmd = _position_pid.compute(_target_trigger_radian, _current_trigger_radian, _dt);
+        // float torque_cmd = _rotate_pid.compute(rotate_cmd, _current_trigger_rotate, _dt);
         if(DOWN == _direction)
         {
             motor_base->send_torque(-torque_cmd);

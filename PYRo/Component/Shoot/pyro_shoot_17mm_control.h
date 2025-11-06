@@ -31,11 +31,6 @@ private:
     fric_drv_t *_fric_drv[2];
 };
     
-
-
-
-
-
 }
 
 

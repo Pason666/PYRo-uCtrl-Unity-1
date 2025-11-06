@@ -13,8 +13,7 @@ shoot_base_t::shoot_base_t()
 
 void shoot_base_t::set_continuous_mode_delay(uint16_t delay)
 {
-    _continuous_mode_delay = delay;
-}
+    _continuous_mode_delay = delay;}
 
 void shoot_base_t::dr16_cmd()
 {
@@ -46,17 +45,17 @@ void shoot_base_t::dr16_cmd()
         }
         else
         {
-            // if(dr16_drv_t::DR16_SW_MID == static_cast<uint8_t>(p_ctrl->rc.s[dr16_drv_t::DR16_SW_LEFT]))
-
             if(dr16_drv_t::DR16_SW_MID == static_cast<uint8_t>(p_ctrl->rc.s[dr16_drv_t::DR16_SW_LEFT])
                 && dr16_drv_t::DR16_SW_UP == static_cast<uint8_t>(p_last_ctrl->rc.s[dr16_drv_t::DR16_SW_LEFT]))
             {
                 _ready_mode = SHOOT_READY_SETUP;
+                _continuous_delay = 0;
             }
             else if(dr16_drv_t::DR16_SW_DOWN == static_cast<uint8_t>(p_ctrl->rc.s[dr16_drv_t::DR16_SW_LEFT])
                && dr16_drv_t::DR16_SW_MID == static_cast<uint8_t>(p_last_ctrl->rc.s[dr16_drv_t::DR16_SW_LEFT]))
             {
                 _ready_mode = SHOOT_READY_START;
+                _continuous_delay = 0;
             }
             else if(dr16_drv_t::DR16_SW_DOWN == static_cast<uint8_t>(p_ctrl->rc.s[dr16_drv_t::DR16_SW_LEFT])
                     && dr16_drv_t::DR16_SW_DOWN == static_cast<uint8_t>(p_last_ctrl->rc.s[dr16_drv_t::DR16_SW_LEFT]))
@@ -67,9 +66,10 @@ void shoot_base_t::dr16_cmd()
                     _ready_mode = SHOOT_READY_CONTINUOUS;
                 }
             }
-            else
+            else if(dr16_drv_t::DR16_SW_MID == static_cast<uint8_t>(p_ctrl->rc.s[dr16_drv_t::DR16_SW_LEFT])
+                && dr16_drv_t::DR16_SW_DOWN == static_cast<uint8_t>(p_last_ctrl->rc.s[dr16_drv_t::DR16_SW_LEFT]))
             {
-                _continuous_delay = 0;
+                _ready_mode = SHOOT_READY_WAIT;
             }
 
         }
