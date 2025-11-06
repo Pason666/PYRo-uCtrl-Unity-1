@@ -23,7 +23,8 @@ public:
         SHOOT_READY        = 0x02,
         SHOOT_START        = 0x03,
         SHOOT_WAIT         = 0x04,
-        SHOOT_CONTINUOUS   = 0x05
+        SHOOT_CONTINUOUS   = 0x05,
+        SHOOT_CALIBRATION   = 0x06
     };
     enum ready_mode_t
     {

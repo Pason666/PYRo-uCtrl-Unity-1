@@ -31,10 +31,10 @@ extern "C"
 
     void pyro_shoot_demo(void *arg)
     { 
-        fric1_speed_pid = new pyro::pid_ctrl_t(1.5f, 0.0f, 0.0f);
-        fric2_speed_pid = new pyro::pid_ctrl_t(1.5f, 0.0f, 0.0f);
-        trigger_speed_pid = new pyro::pid_ctrl_t(0.2f, 70.0f, 0.0005f);
-        trigger_positon_pid = new pyro::pid_ctrl_t(0.4f, 0.1f, 0.0f);
+        fric1_speed_pid = new pyro::pid_ctrl_t(12.0f, 0.0f, 0.0f);
+        fric2_speed_pid = new pyro::pid_ctrl_t(12.0f, 0.0f, 0.0f);
+        trigger_speed_pid = new pyro::pid_ctrl_t(6.0f, 80.0f, 0.0004f);
+        trigger_positon_pid = new pyro::pid_ctrl_t(7.0f, 0.0f, 0.0f);
 
         trigger_speed_pid->set_integral_limits(0.01f);
         trigger_positon_pid->set_integral_limits(1000.0f);
@@ -85,7 +85,7 @@ extern "C"
 
         shoot_drv->set_continuous_mode_delay(20);
         shoot_drv->set_fric_speed(23.0f);
-        shoot_drv->set_trigger_rotate(5.0f);
+        shoot_drv->set_trigger_rotate(10.0f);
 
         while (true)
         {

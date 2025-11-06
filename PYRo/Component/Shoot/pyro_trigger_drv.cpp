@@ -120,10 +120,7 @@ void trigger_drv_t::update_feedback()
     }
     _last_motor_radian = _current_motor_radian;
     _current_motor_radian = motor_base->get_current_position();
-    if(POSITION == _mode)
-    {
-        _motor_to_trigger_radian();
-    }
+    _motor_to_trigger_radian();
 }
 
 void trigger_drv_t::control()

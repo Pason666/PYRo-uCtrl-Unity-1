@@ -23,7 +23,6 @@ public:
     trigger_drv_t *_trigger_drv;
 
 private:
-    bool _reverse = true;
     float _first_radian{};
     float _trigger_rotate;
     float _fric_speed;

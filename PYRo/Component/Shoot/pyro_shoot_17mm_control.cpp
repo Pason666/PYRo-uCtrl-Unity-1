@@ -30,7 +30,7 @@ void shoot_17mm_control_t::update_feedback()
 
 void shoot_17mm_control_t::zero_force()
 {
-    if(abs(_fric_drv[0]->get_speed()) < 0.5f && abs(_fric_drv[1]->get_speed()) < 0.5f)
+    if(abs(_fric_drv[0]->get_speed()) < 0.2f && abs(_fric_drv[1]->get_speed()) < 0.2f)
     {
         _fric_drv[0]->zero_force();
         _fric_drv[1]->zero_force();
@@ -63,19 +63,21 @@ void shoot_17mm_control_t::set_control()
             {
                 if(SHOOT_READY_SETUP == _ready_mode)
                 {
-                    _reverse = true;
                     _local_mode = SHOOT_SETUP;
                 }
             }
             else if(SHOOT_SETUP == _local_mode)
             {
+                if(abs(_trigger_drv->get_radian() - _trigger_drv->get_target_radian()) > 0.1f)
+                {
+                    _local_mode = SHOOT_CALIBRATION;
+                }
                 if(abs(_fric_drv[0]->get_speed() - _fric_drv[0]->get_target_speed()) < 0.5f &&
                    abs(_fric_drv[1]->get_speed() - _fric_drv[1]->get_target_speed()) < 0.5f 
                    && abs(_trigger_drv->get_rotate()) < 0.02f
                 )
                 {
                     _local_mode = SHOOT_READY;
-                    _reverse = false;
                 }
             }
             else if(SHOOT_READY == _local_mode)
@@ -87,7 +89,6 @@ void shoot_17mm_control_t::set_control()
                 if(SHOOT_READY_CONTINUOUS == _ready_mode)
                 {
                     _local_mode = SHOOT_CONTINUOUS;
-                    _reverse = true;
                 }
             }
             else if(SHOOT_START == _local_mode)
@@ -100,14 +101,26 @@ void shoot_17mm_control_t::set_control()
                 if(abs(_trigger_drv->get_radian() - _trigger_drv->get_target_radian()) < 0.05f)
                 {
                     _local_mode = SHOOT_SETUP;
-
                 }
             }
             else if(SHOOT_CONTINUOUS == _local_mode)
             {
                 if(SHOOT_READY_SETUP == _ready_mode)
                 {
-                    _reverse = true;
+                    _local_mode = SHOOT_SETUP;
+                }
+            }
+            else if(SHOOT_CALIBRATION == _local_mode)
+            {
+                if(abs(_trigger_drv->get_rotate()) < 0.05f)
+                {
+                    _local_mode = SHOOT_SETUP;
+                }
+            }
+            else if(SHOOT_CALIBRATION == _local_mode)
+            {
+                if(_trigger_drv->get_rotate() < 0.1f)
+                {
                     _local_mode = SHOOT_SETUP;
                 }
             }
@@ -177,14 +190,23 @@ void shoot_17mm_control_t::control()
 
             if(SHOOT_SETUP == _local_mode)
             {
-                if(_reverse)
-                {
-                    _trigger_drv->set_rotate(-2.0f);
-                }
+                _trigger_drv->set_rotate(0.0f);
+                // if(_reverse)
+                // {
+                //     _trigger_drv->set_rotate(-2.0f);
+                // }
+            }
+            else if(SHOOT_READY == _local_mode)
+            {
+                _trigger_drv->set_rotate(0.0f);
             }
             else if (SHOOT_CONTINUOUS == _local_mode)
             {
                 _trigger_drv->set_rotate(_trigger_rotate);
+            }
+            else if(SHOOT_CALIBRATION == _local_mode)
+            {
+                _trigger_drv->set_rotate(-3.0f);
             }
 
             _fric_drv[0]->control();
